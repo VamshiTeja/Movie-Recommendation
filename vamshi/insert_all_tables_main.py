@@ -2,7 +2,7 @@
 # @Author: vamshi
 # @Date:   2018-02-19 23:34:40
 # @Last Modified by:   vamshi
-# @Last Modified time: 2018-02-21 18:25:41
+# @Last Modified time: 2018-02-21 22:10:56
 
 import sys
 import os
@@ -36,15 +36,21 @@ def create_tables():
             )
         """,
         """
-        CREATE TABLE GENRE (
-            genreID SERIAL PRIMARY KEY,
+        CREATE TABLE MOV_GENRE (
+            movieID INTEGER REFERENCES MOVIE,
+            genre VARCHAR(225)
+        )
+        """,
+        """
+        CREATE TABLE TV_GENRE (
+            genreID INTEGER REFERENCES TV_SHOW,
             genre VARCHAR(225)
         )
         """,
 
         """
         CREATE TABLE TV_SHOW(
-        	showID INTEGER PRIMARY KEY,
+            showID INTEGER PRIMARY KEY,
             primary_title VARCHAR(255),
             original_title VARCHAR(255),
             isAdult boolean,
@@ -57,45 +63,79 @@ def create_tables():
         """,
         """
         CREATE TABLE TV_episode(
-        	epsoID INTEGER PRIMARY KEY,
+            epsoID INTEGER PRIMARY KEY,
             primary_title VARCHAR(255),
             original_title VARCHAR(255),
             release_year VARCHAR(255),
             run_time VARCHAR(255),
-            showID INTEGER REFERENCES TV_SHOW,
+            showID INTEGER,
             season_No VARCHAR(255),
             epso_No VARCHAR(255),
             avg_rating DECIMAL,
             num_votes DECIMAL
-        	)
+            )
         """,
         """
         CREATE TABLE DIRECTOR(
-        	dirID INTEGER PRIMARY KEY
+            dirID INTEGER PRIMARY KEY
         )
         """,
         """
         CREATE TABLE WRITER(
-        	wriID INTEGER PRIMARY KEY
+            wriID INTEGER PRIMARY KEY
         )
         """,
         """
         CREATE TABLE PRINCIPALS(
-        	perID INTEGER PRIMARY KEY,
-        	job_category VARCHAR(255)  
+            perID INTEGER PRIMARY KEY,
+            job_category VARCHAR(255)  
         )
         """,
 
         """
         CREATE TABLE MOVIE_PEOPLE (
-            PersonID VARCHAR(255) PRIMARY KEY,
+            PerID VARCHAR(255) PRIMARY KEY,
             Name VARCHAR(255),
             birthYear VARCHAR(255),
             deathYear VARCHAR(255)
         )
+        """,
         """
+        CREATE TABLE PROFESSION(
+            PerID VARCHAR(255) REFERENCES MOVIE_PEOPLE,
+            profession VARCHAR(255)  
 
-          
+        )
+        """,
+        """
+        CREATE TABLE KNOWN_FOR(
+            PerID VARCHAR(255) REFERENCES MOVIE_PEOPLE,
+            knownfor VARCHAR(255)  
+
+        )
+        """,
+        """
+        CREATE TABLE DIRECTS(
+            dirID VARCHAR(255) REFERENCES DIRECTOR,
+            movID VARCHAR(255) REFERENCES MOVIE
+
+        )
+        """,
+        """
+        CREATE TABLE WRITES(
+            wirID VARCHAR(255) REFERENCES WRITER,
+            movID VARCHAR(255) REFERENCES MOVIE
+
+        )
+        """,
+        """
+        CREATE TABLE PRINCE_CAST(
+            movID VARCHAR(255) REFERENCES MOVIE,
+            perID VARCHAR(255) REFERENCES MOVIE_PEOPLE
+
+        )
+        """,
+
         )
 
     copy_commands = ("""COPY MOVIE FROM '/home/vamshi/BTECH/SEM 6/DBMS II/Project/asg2/movies.csv' DELIMITER '\t' CSV HEADER""",
