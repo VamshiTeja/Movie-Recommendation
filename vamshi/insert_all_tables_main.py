@@ -2,7 +2,7 @@
 # @Author: vamshi
 # @Date:   2018-02-19 23:34:40
 # @Last Modified by:   vamshi
-# @Last Modified time: 2018-02-21 22:10:56
+# @Last Modified time: 2018-02-23 23:19:07
 
 import sys
 import os
@@ -31,21 +31,12 @@ def create_tables():
             isAdult boolean,
             release_year VARCHAR(255),
             run_time VARCHAR(255),
+            genres VARCHAR(255),
             avg_rating DECIMAL,
-            num_votes DECIMAL
+            num_votes DECIMAL,
+            directors VARCHAR(255),
+            writers VARCHAR(255)
             )
-        """,
-        """
-        CREATE TABLE MOV_GENRE (
-            movieID INTEGER REFERENCES MOVIE,
-            genre VARCHAR(225)
-        )
-        """,
-        """
-        CREATE TABLE TV_GENRE (
-            genreID INTEGER REFERENCES TV_SHOW,
-            genre VARCHAR(225)
-        )
         """,
 
         """
@@ -57,8 +48,10 @@ def create_tables():
             start_year VARCHAR(255),
             end_year VARCHAR(255),
             run_time VARCHAR(255),
+            genres VARCHAR(255),
             avg_rating DECIMAL,
             num_votes DECIMAL
+            
         )
         """,
         """
@@ -68,7 +61,7 @@ def create_tables():
             original_title VARCHAR(255),
             release_year VARCHAR(255),
             run_time VARCHAR(255),
-            showID INTEGER,
+            showID INTEGER REFERENCES TV_SHOW,
             season_No VARCHAR(255),
             epso_No VARCHAR(255),
             avg_rating DECIMAL,
@@ -76,78 +69,33 @@ def create_tables():
             )
         """,
         """
-        CREATE TABLE DIRECTOR(
-            dirID INTEGER PRIMARY KEY
-        )
-        """,
-        """
-        CREATE TABLE WRITER(
-            wriID INTEGER PRIMARY KEY
-        )
-        """,
-        """
-        CREATE TABLE PRINCIPALS(
-            perID INTEGER PRIMARY KEY,
-            job_category VARCHAR(255)  
-        )
-        """,
-
-        """
         CREATE TABLE MOVIE_PEOPLE (
-            PerID VARCHAR(255) PRIMARY KEY,
+            PerID INTEGER PRIMARY KEY,
             Name VARCHAR(255),
             birthYear VARCHAR(255),
-            deathYear VARCHAR(255)
-        )
-        """,
-        """
-        CREATE TABLE PROFESSION(
-            PerID VARCHAR(255) REFERENCES MOVIE_PEOPLE,
-            profession VARCHAR(255)  
-
-        )
-        """,
-        """
-        CREATE TABLE KNOWN_FOR(
-            PerID VARCHAR(255) REFERENCES MOVIE_PEOPLE,
-            knownfor VARCHAR(255)  
-
-        )
-        """,
-        """
-        CREATE TABLE DIRECTS(
-            dirID VARCHAR(255) REFERENCES DIRECTOR,
-            movID VARCHAR(255) REFERENCES MOVIE
-
-        )
-        """,
-        """
-        CREATE TABLE WRITES(
-            wirID VARCHAR(255) REFERENCES WRITER,
-            movID VARCHAR(255) REFERENCES MOVIE
-
+            deathYear VARCHAR(255),
+            primaryProfession VARCHAR(255),
+            knownforTitle VARCHAR(255)
         )
         """,
         """
         CREATE TABLE PRINCE_CAST(
-            movID VARCHAR(255) REFERENCES MOVIE,
-            perID VARCHAR(255) REFERENCES MOVIE_PEOPLE
+            movID INTEGER REFERENCES MOVIE,
+            perID INTEGER REFERENCES MOVIE_PEOPLE,
+            category VARCHAR(255),
+            job VARCHAR(255),
+            characters VARCHAR(255)
 
         )
         """,
-
         )
 
     copy_commands = ("""COPY MOVIE FROM '/home/vamshi/BTECH/SEM 6/DBMS II/Project/asg2/movies.csv' DELIMITER '\t' CSV HEADER""",
     				"""COPY TV_SHOW FROM '/home/vamshi/BTECH/SEM 6/DBMS II/Project/asg2/tv_shows.csv' DELIMITER '\t' CSV HEADER""",
     				"""COPY TV_episode FROM '/home/vamshi/BTECH/SEM 6/DBMS II/Project/asg2/tv_eps.csv' DELIMITER '\t' CSV HEADER""",
     				"""COPY MOVIE_PEOPLE FROM '/home/vamshi/BTECH/SEM 6/DBMS II/Project/asg2/movie_people.csv' DELIMITER '\t' CSV HEADER""",
+    				"""COPY PRINCE_CAST FROM '/home/vamshi/BTECH/SEM 6/DBMS II/Project/asg2/prince_cast.csv' DELIMITER '\t' CSV HEADER""",
     				)
-
-    c = ("""CREATE TEMP TABLE  temp_table (id bigint, dob bigint )""",
-    	"""COPY temp_table '/home/vamshi/BTECH/SEM 6/DBMS II/Project/Data/name.basics.tsv' delimiter '\t'  csv header""",
-    	"""UPDATE movie_People SET movie.dob = temp_table.dob FROM temp_table  Where original_table.id = temp_table.id""",
-    	"""DROP TABLE temp_table""")
 
     conn = None
     try:
